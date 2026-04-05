@@ -551,6 +551,9 @@
     /* ---- Sub-insight warning tint ---- */
     .sub-insight--warning { border-left: 2px solid rgba(212,175,55,0.4); padding-left: 10px; }
 
+    /* ---- Landing layout (desktop split) ---- */
+    .landing-layout { display: grid; grid-template-columns: 1fr; }
+
     /* ---- Responsive ---- */
 
     /* Phone */
@@ -563,49 +566,22 @@
       .compat-btn { width: 100%; }
     }
 
-    /* Tablet — give it some breathing room */
-    @media (min-width: 768px) {
-      .container { max-width: 860px; }
-      .input-card { max-width: 600px; }
-    }
-
-    /* Desktop — 2-column report grid */
-    @media (min-width: 1024px) {
-      .container { max-width: 1140px; padding: 0 40px; }
-      .input-card { max-width: 640px; }
-      .hero h1 { font-size: 64px; }
-      .hero-sub { font-size: 20px; max-width: 600px; }
-
-      /* Turn the report area into a 2-column grid */
-      .report-container {
-        display: grid;
+    /* Desktop — 2-column landing, single-column report */
+    @media (min-width: 900px) {
+      .container { max-width: 1140px; padding: 0 48px; }
+      .landing-layout {
         grid-template-columns: 1fr 1fr;
-        column-gap: 20px;
+        gap: 80px;
+        align-items: center;
+        padding: 80px 0 60px;
       }
-
-      /* Full-width items span both columns */
-      .report-header,
-      .compat-picker,
-      .compat-card,
-      .sample-report,
-      .email-card,
-      .cosmic-card-wrap,
-      .paywall-card,
-      .error-card,
-      .report-actions {
-        grid-column: 1 / -1;
-      }
-
-      /* Section cards fill their cell — remove per-card bottom margin, use grid gap instead */
-      .section-card { margin-bottom: 0; }
-
-      /* Slightly larger text in section cards on desktop */
-      .section-headline { font-size: 22px; }
-      .section-body { font-size: 16px; }
-
-      /* Report header bigger on desktop */
-      .report-header .zodiac-symbol { font-size: 80px; }
-      .report-header .sign-name { font-size: 34px; }
+      .hero { padding: 0; text-align: left; }
+      .hero h1 { font-size: 52px; }
+      .hero-eyebrow { text-align: left; }
+      .hero-sub { margin: 0 0 8px; max-width: none; text-align: left; }
+      .hero-tagline { text-align: left; }
+      .landing-sidebar .input-card { max-width: none; margin-bottom: 20px; }
+      .report-container { max-width: 860px; margin: 0 auto; }
     }
   </style>
   <script defer src="/_vercel/insights/script.js"></script>
@@ -1208,38 +1184,42 @@ function App() {
       <div className="container">
         {state === 'idle' && (
           <React.Fragment>
-            <section className="hero">
-              <div className="hero-eyebrow">Astrology + Numerology + AI</div>
-              <h1>Your Cosmic <em>Blueprint</em></h1>
-              <div className="hero-sub">Enter your birthday. Receive a reading that feels like it was written by someone who has known you your whole life.</div>
-              <div className="hero-tagline">Sun sign. Life Path. Moon sign. Cosmic Card. All from one date.</div>
-            </section>
+            <div className="landing-layout">
+              <section className="hero">
+                <div className="hero-eyebrow">Astrology + Numerology + AI</div>
+                <h1>Your Cosmic <em>Blueprint</em></h1>
+                <div className="hero-sub">Enter your birthday. Receive a reading that feels like it was written by someone who has known you your whole life.</div>
+                <div className="hero-tagline">Sun sign. Life Path. Moon sign. Cosmic Card. All from one date.</div>
+              </section>
 
-            <form className="input-card" onSubmit={handleSubmit}>
-              <label className="input-label">Your Birthday</label>
-              <div className="input-row">
-                <select className="cosmic-select" value={day} onChange={e => setDay(e.target.value)} required>
-                  <option value="">Day</option>
-                  {Array.from({length:31}, (_,i) => <option key={i+1} value={i+1}>{i+1}</option>)}
-                </select>
-                <select className="cosmic-select" value={month} onChange={e => setMonth(e.target.value)} required>
-                  <option value="">Month</option>
-                  {MONTHS.map((m,i) => <option key={i+1} value={i+1}>{m}</option>)}
-                </select>
-                <select className="cosmic-select" value={year} onChange={e => setYear(e.target.value)} required>
-                  <option value="">Year</option>
-                  {Array.from({length:61}, (_,i) => <option key={2010-i} value={2010-i}>{2010-i}</option>)}
-                </select>
-              </div>
-              <label className="input-label" style={{marginTop: '12px'}}>Birth Time (optional)</label>
-              <div className="input-row time-row">
-                <input className="cosmic-input" type="time" value={birthTime} onChange={e => setBirthTime(e.target.value)} placeholder="HH:MM" />
-              </div>
-              <div className="time-hint">Birth time refines your Moon sign. Leave blank for an approximation.</div>
-              <button className="submit-btn" type="submit">Reveal My Blueprint</button>
-            </form>
+              <div className="landing-sidebar">
+                <form className="input-card" onSubmit={handleSubmit}>
+                  <label className="input-label">Your Birthday</label>
+                  <div className="input-row">
+                    <select className="cosmic-select" value={day} onChange={e => setDay(e.target.value)} required>
+                      <option value="">Day</option>
+                      {Array.from({length:31}, (_,i) => <option key={i+1} value={i+1}>{i+1}</option>)}
+                    </select>
+                    <select className="cosmic-select" value={month} onChange={e => setMonth(e.target.value)} required>
+                      <option value="">Month</option>
+                      {MONTHS.map((m,i) => <option key={i+1} value={i+1}>{m}</option>)}
+                    </select>
+                    <select className="cosmic-select" value={year} onChange={e => setYear(e.target.value)} required>
+                      <option value="">Year</option>
+                      {Array.from({length:61}, (_,i) => <option key={2010-i} value={2010-i}>{2010-i}</option>)}
+                    </select>
+                  </div>
+                  <label className="input-label" style={{marginTop: '12px'}}>Birth Time (optional)</label>
+                  <div className="input-row time-row">
+                    <input className="cosmic-input" type="time" value={birthTime} onChange={e => setBirthTime(e.target.value)} placeholder="HH:MM" />
+                  </div>
+                  <div className="time-hint">Birth time refines your Moon sign. Leave blank for an approximation.</div>
+                  <button className="submit-btn" type="submit">Reveal My Blueprint</button>
+                </form>
 
-            {error && <div className="error-card">{error}</div>}
+                {error && <div className="error-card">{error}</div>}
+              </div>
+            </div>
           </React.Fragment>
         )}
 
