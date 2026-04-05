@@ -1,0 +1,1026 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>CosmicBorn — Your Cosmic Blueprint from Birth</title>
+  <meta name="description" content="Discover your cosmic blueprint. Sun sign, Life Path number, Moon sign, and Cosmic Card — an AI-powered astrology and numerology reading that feels hauntingly accurate." />
+  <meta property="og:title" content="CosmicBorn — Your Cosmic Blueprint" />
+  <meta property="og:description" content="Enter your birthday. Get a cosmic reading that feels like it was written by someone who knows your soul." />
+  <meta property="og:type" content="website" />
+  <meta name="theme-color" content="#0a0a1a" />
+  <meta name="stripe-payment-link" content="STRIPE_LINK_PLACEHOLDER" />
+
+  <!-- CDN: pinned exact versions -->
+  <script crossorigin src="https://unpkg.com/react@18.2.0/umd/react.production.min.js"></script>
+  <script crossorigin src="https://unpkg.com/react-dom@18.2.0/umd/react-dom.production.min.js"></script>
+  <script src="https://unpkg.com/@babel/standalone@7.23.10/babel.min.js"></script>
+
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;0,900;1,400&family=Source+Sans+3:wght@300;400;600;700&display=swap');
+
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --bg: #0a0a1a;
+      --gold: #d4af37;
+      --gold-dim: rgba(212,175,55,0.3);
+      --gold-glow: rgba(212,175,55,0.15);
+      --purple: #9b7fe8;
+      --purple-dim: rgba(155,127,232,0.2);
+      --text: #c8c8d4;
+      --text-bright: #e8e8f0;
+      --text-muted: #7a7a8e;
+      --card-bg: rgba(255,255,255,0.05);
+      --card-border: rgba(212,175,55,0.3);
+    }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      font-family: 'Source Sans 3', -apple-system, BlinkMacSystemFont, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      min-height: 100vh;
+      line-height: 1.6;
+      position: relative;
+      overflow-x: hidden;
+    }
+
+    /* ---- Starfield ---- */
+    .starfield {
+      position: fixed;
+      top: 0; left: 0; right: 0; bottom: 0;
+      pointer-events: none;
+      z-index: 0;
+      overflow: hidden;
+    }
+    .star {
+      position: absolute;
+      width: 2px; height: 2px;
+      background: white;
+      border-radius: 50%;
+      animation: twinkle var(--duration, 3s) ease-in-out infinite;
+      animation-delay: var(--delay, 0s);
+      opacity: 0;
+    }
+    .star.large { width: 3px; height: 3px; }
+    @keyframes twinkle {
+      0%, 100% { opacity: 0.1; }
+      50% { opacity: var(--peak, 0.8); }
+    }
+
+    #root { position: relative; z-index: 1; min-height: 100vh; }
+
+    /* ---- Layout ---- */
+    .container { max-width: 720px; margin: 0 auto; padding: 0 20px; }
+
+    /* ---- Header ---- */
+    .site-header {
+      padding: 20px 0;
+      border-bottom: 1px solid var(--gold-dim);
+    }
+    .site-header .container {
+      display: flex; align-items: center; gap: 12px;
+    }
+    .logo-mark {
+      width: 36px; height: 36px;
+      background: linear-gradient(135deg, var(--gold), #b8962e);
+      border-radius: 50%;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 18px; color: var(--bg);
+    }
+    .logo-text {
+      font-family: 'Playfair Display', Georgia, serif;
+      font-weight: 700; font-size: 20px; color: var(--gold);
+    }
+
+    /* ---- Hero ---- */
+    .hero { padding: 60px 0 40px; text-align: center; }
+    .hero-eyebrow {
+      font-size: 11px; font-weight: 600; letter-spacing: 0.2em;
+      text-transform: uppercase; color: var(--purple); margin-bottom: 16px;
+    }
+    .hero h1 {
+      font-family: 'Playfair Display', Georgia, serif;
+      font-size: clamp(32px, 6vw, 56px);
+      font-weight: 900; line-height: 1.1;
+      color: var(--gold); margin-bottom: 20px;
+    }
+    .hero h1 em {
+      font-style: italic; color: var(--purple);
+    }
+    .hero-sub {
+      font-size: 18px; color: var(--text-muted);
+      max-width: 520px; margin: 0 auto 8px;
+      font-weight: 300;
+    }
+    .hero-tagline {
+      font-size: 13px; color: var(--text-muted); opacity: 0.6;
+      font-style: italic;
+    }
+
+    /* ---- Input card ---- */
+    .input-card {
+      background: var(--card-bg);
+      border: 1px solid var(--card-border);
+      border-radius: 16px;
+      padding: 32px;
+      margin: 0 auto 32px;
+      max-width: 520px;
+    }
+    .input-label {
+      display: block; font-size: 12px; font-weight: 600;
+      color: var(--gold); margin-bottom: 12px;
+      text-transform: uppercase; letter-spacing: 0.1em;
+      font-family: 'Playfair Display', Georgia, serif;
+    }
+    .input-row {
+      display: grid;
+      grid-template-columns: 1fr 1fr 1fr;
+      gap: 10px;
+      margin-bottom: 16px;
+    }
+    .input-row.time-row {
+      grid-template-columns: 1fr;
+      max-width: 200px;
+    }
+    .cosmic-select, .cosmic-input {
+      padding: 12px 14px;
+      background: rgba(255,255,255,0.03);
+      border: 1px solid var(--gold-dim);
+      border-radius: 8px;
+      color: var(--text-bright);
+      font-size: 15px; font-weight: 600;
+      cursor: pointer;
+      transition: border-color 0.2s;
+      appearance: none; -webkit-appearance: none;
+      font-family: 'Source Sans 3', sans-serif;
+    }
+    .cosmic-select {
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='14' height='14' viewBox='0 0 24 24' fill='none' stroke='%23d4af37' stroke-width='2'%3E%3Cpolyline points='6 9 12 15 18 9'%3E%3C/polyline%3E%3C/svg%3E");
+      background-repeat: no-repeat;
+      background-position: right 10px center;
+      padding-right: 32px;
+    }
+    .cosmic-select:focus, .cosmic-input:focus {
+      outline: none; border-color: var(--gold);
+      box-shadow: 0 0 12px var(--gold-glow);
+    }
+    .time-hint {
+      font-size: 11px; color: var(--text-muted); margin-top: 4px;
+      font-style: italic;
+    }
+    .submit-btn {
+      width: 100%; padding: 14px 24px;
+      background: linear-gradient(135deg, var(--gold), #b8962e);
+      color: var(--bg); border: none; border-radius: 10px;
+      font-size: 16px; font-weight: 700; cursor: pointer;
+      transition: all 0.3s;
+      font-family: 'Playfair Display', Georgia, serif;
+      letter-spacing: 0.03em;
+      margin-top: 8px;
+    }
+    .submit-btn:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 8px 32px rgba(212,175,55,0.3);
+    }
+    .submit-btn:disabled { opacity: 0.4; cursor: not-allowed; transform: none; box-shadow: none; }
+
+    /* ---- Loading ---- */
+    .loading-state { text-align: center; padding: 80px 20px; }
+    .cosmic-spinner {
+      width: 60px; height: 60px;
+      border: 2px solid var(--gold-dim);
+      border-top-color: var(--gold);
+      border-radius: 50%;
+      animation: spin 1.2s linear infinite;
+      margin: 0 auto 24px;
+      position: relative;
+    }
+    .cosmic-spinner::after {
+      content: ''; position: absolute;
+      top: 6px; left: 6px; right: 6px; bottom: 6px;
+      border: 2px solid transparent;
+      border-top-color: var(--purple);
+      border-radius: 50%;
+      animation: spin 0.8s linear infinite reverse;
+    }
+    @keyframes spin { to { transform: rotate(360deg); } }
+    .loading-state p { color: var(--text-muted); font-size: 16px; font-style: italic; }
+    .loading-detail { font-size: 13px; margin-top: 8px; opacity: 0.5; }
+
+    /* ---- Report ---- */
+    .report-container { padding: 20px 0 60px; }
+    .report-header {
+      text-align: center; margin-bottom: 32px; padding: 32px;
+      background: var(--card-bg); border-radius: 16px;
+      border: 1px solid var(--card-border);
+    }
+    .report-header .zodiac-symbol {
+      font-size: 64px; line-height: 1; margin-bottom: 8px;
+      color: var(--gold);
+    }
+    .report-header .sign-name {
+      font-family: 'Playfair Display', Georgia, serif;
+      font-size: 28px; font-weight: 700; color: var(--gold);
+    }
+    .report-header .life-path-label {
+      font-size: 14px; color: var(--purple); font-weight: 600;
+      margin-top: 4px;
+    }
+    .report-header .birth-info {
+      font-size: 13px; color: var(--text-muted); margin-top: 8px;
+    }
+
+    .section-card {
+      background: var(--card-bg);
+      border: 1px solid var(--card-border);
+      border-radius: 12px;
+      padding: 24px; margin-bottom: 16px;
+      transition: border-color 0.3s;
+    }
+    .section-card:hover { border-color: var(--gold); }
+    .section-number {
+      font-size: 11px; font-weight: 700;
+      text-transform: uppercase; letter-spacing: 0.12em;
+      color: var(--gold); margin-bottom: 6px;
+    }
+    .section-headline {
+      font-family: 'Playfair Display', Georgia, serif;
+      font-size: 20px; font-weight: 700; color: var(--text-bright);
+      margin-bottom: 12px; line-height: 1.3;
+    }
+    .section-body {
+      font-size: 15px; color: var(--text); line-height: 1.7;
+      margin-bottom: 12px;
+    }
+    .sub-insight {
+      margin-top: 10px; padding: 12px 16px;
+      background: rgba(255,255,255,0.03);
+      border-left: 2px solid var(--gold-dim);
+      border-radius: 0 8px 8px 0;
+      font-size: 14px; color: var(--text-muted);
+    }
+    .sub-insight strong {
+      color: var(--gold); font-weight: 600;
+      font-family: 'Playfair Display', Georgia, serif;
+    }
+    .moon-note {
+      font-size: 12px; color: var(--text-muted); font-style: italic;
+      opacity: 0.7; margin-top: 8px;
+    }
+
+    .power-card {
+      background: linear-gradient(135deg, var(--gold-glow), var(--purple-dim));
+      border: 1px solid var(--gold);
+      border-radius: 12px;
+      padding: 20px 24px; margin-top: 16px;
+    }
+    .power-label {
+      font-size: 11px; font-weight: 700;
+      text-transform: uppercase; letter-spacing: 0.12em;
+      color: var(--gold); margin-bottom: 6px;
+    }
+    .power-text {
+      font-size: 15px; font-weight: 600; color: var(--text-bright);
+      line-height: 1.5;
+    }
+
+    /* ---- Cosmic Card ---- */
+    .cosmic-card-wrap {
+      text-align: center; margin: 24px 0;
+    }
+    .cosmic-card-wrap canvas {
+      border-radius: 16px;
+      max-width: 100%;
+      height: auto;
+    }
+    .cosmic-card-blurred canvas {
+      filter: blur(8px);
+      opacity: 0.5;
+    }
+    .cosmic-card-label {
+      font-size: 11px; color: var(--text-muted);
+      text-transform: uppercase; letter-spacing: 0.1em;
+      margin-top: 8px;
+    }
+
+    /* ---- Paywall ---- */
+    .paywall-card {
+      background: linear-gradient(135deg, var(--card-bg), rgba(155,127,232,0.08));
+      border: 2px solid var(--gold);
+      border-radius: 16px;
+      padding: 32px; text-align: center;
+      margin: 24px 0;
+      box-shadow: 0 0 60px var(--gold-glow);
+    }
+    .paywall-card h2 {
+      font-family: 'Playfair Display', Georgia, serif;
+      font-size: 24px; font-weight: 700; color: var(--gold);
+      margin-bottom: 12px;
+    }
+    .paywall-card p {
+      color: var(--text-muted); margin-bottom: 20px; font-size: 15px;
+    }
+    .paywall-sections {
+      display: flex; flex-direction: column; gap: 8px;
+      margin-bottom: 24px; text-align: left;
+    }
+    .paywall-item {
+      display: flex; align-items: center; gap: 10px;
+      font-size: 14px; color: var(--text-muted);
+    }
+    .paywall-item .check {
+      width: 20px; height: 20px; border-radius: 50%;
+      background: var(--gold-glow); color: var(--gold);
+      display: flex; align-items: center; justify-content: center;
+      font-size: 10px; flex-shrink: 0;
+    }
+    .price-badge {
+      display: inline-flex; align-items: baseline; gap: 4px;
+      margin-bottom: 16px;
+    }
+    .price-badge .amount {
+      font-family: 'Playfair Display', Georgia, serif;
+      font-size: 44px; font-weight: 900; color: var(--gold);
+    }
+    .price-badge .currency { font-size: 20px; color: var(--text-muted); }
+    .price-badge .per { font-size: 14px; color: var(--text-muted); }
+    .pay-btn {
+      display: block; width: 100%; padding: 16px;
+      background: linear-gradient(135deg, var(--gold), #b8962e);
+      color: var(--bg); border: none; border-radius: 10px;
+      font-size: 16px; font-weight: 700; cursor: pointer;
+      transition: all 0.3s; text-decoration: none;
+      font-family: 'Playfair Display', Georgia, serif;
+    }
+    .pay-btn:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 8px 32px rgba(212,175,55,0.4);
+    }
+    .paywall-disclaimer {
+      font-size: 12px; color: var(--text-muted);
+      margin-top: 12px; opacity: 0.5;
+    }
+
+    /* ---- Email capture ---- */
+    .email-card {
+      background: var(--card-bg);
+      border: 1px solid var(--card-border);
+      border-radius: 12px;
+      padding: 24px; margin-bottom: 16px;
+    }
+    .email-card .label {
+      font-size: 12px; font-weight: 700;
+      text-transform: uppercase; letter-spacing: 0.1em;
+      color: var(--purple); margin-bottom: 6px;
+    }
+    .email-card .title {
+      font-family: 'Playfair Display', Georgia, serif;
+      font-size: 17px; font-weight: 700; color: var(--text-bright);
+      margin-bottom: 6px;
+    }
+    .email-card .desc {
+      font-size: 14px; color: var(--text-muted); margin-bottom: 14px;
+    }
+    .email-form { display: flex; gap: 10px; }
+    .email-input {
+      flex: 1; padding: 11px 14px;
+      background: rgba(255,255,255,0.03);
+      border: 1px solid var(--gold-dim);
+      border-radius: 8px; color: var(--text-bright);
+      font-size: 14px; font-family: 'Source Sans 3', sans-serif;
+    }
+    .email-input:focus { outline: none; border-color: var(--gold); }
+    .email-submit {
+      padding: 11px 18px;
+      background: var(--purple); color: white;
+      border: none; border-radius: 8px;
+      font-size: 14px; font-weight: 700; cursor: pointer;
+      transition: all 0.2s;
+    }
+    .email-submit:hover { opacity: 0.85; }
+    .email-submit:disabled { opacity: 0.4; cursor: not-allowed; }
+    .email-fine { font-size: 11px; color: var(--text-muted); margin-top: 8px; opacity: 0.6; }
+
+    /* ---- Error ---- */
+    .error-card {
+      background: rgba(239,68,68,0.1);
+      border: 1px solid rgba(239,68,68,0.3);
+      border-radius: 12px;
+      padding: 20px; text-align: center;
+      color: #fca5a5; margin: 20px 0;
+    }
+
+    /* ---- Report actions ---- */
+    .report-actions {
+      display: flex; gap: 12px; margin-top: 32px;
+      justify-content: center; flex-wrap: wrap;
+    }
+    .action-btn {
+      padding: 10px 20px; border-radius: 8px;
+      font-size: 14px; font-weight: 600; cursor: pointer;
+      border: 1px solid var(--gold-dim);
+      background: var(--card-bg); color: var(--text);
+      transition: all 0.2s;
+    }
+    .action-btn:hover { border-color: var(--gold); color: var(--gold); }
+
+    /* ---- Footer ---- */
+    .site-footer {
+      border-top: 1px solid var(--gold-dim);
+      padding: 24px 0; text-align: center;
+      font-size: 12px; color: var(--text-muted); opacity: 0.5;
+    }
+    .site-footer a { color: var(--gold); text-decoration: none; }
+
+    /* ---- Responsive ---- */
+    @media (max-width: 520px) {
+      .input-card { padding: 20px; }
+      .input-row { grid-template-columns: 1fr 1fr; }
+      .hero { padding: 40px 0 24px; }
+      .email-form { flex-direction: column; }
+    }
+  </style>
+  <script defer src="/_vercel/insights/script.js"></script>
+</head>
+<body>
+
+<!-- Starfield background -->
+<div class="starfield" id="starfield"></div>
+
+<div id="root"></div>
+
+<script>
+// Generate stars
+(function() {
+  const sf = document.getElementById('starfield');
+  for (let i = 0; i < 120; i++) {
+    const s = document.createElement('div');
+    s.className = 'star' + (Math.random() > 0.85 ? ' large' : '');
+    s.style.left = Math.random() * 100 + '%';
+    s.style.top = Math.random() * 100 + '%';
+    s.style.setProperty('--duration', (2 + Math.random() * 5) + 's');
+    s.style.setProperty('--delay', (Math.random() * 4) + 's');
+    s.style.setProperty('--peak', (0.3 + Math.random() * 0.7).toFixed(2));
+    sf.appendChild(s);
+  }
+})();
+</script>
+
+<script type="text/babel">
+const { useState, useEffect, useRef, useCallback } = React;
+
+// ---- Astrology data ----
+const ZODIAC = [
+  { sign: 'Capricorn', symbol: '\u2651', element: 'Earth', modality: 'Cardinal', planet: 'Saturn', startM: 1, startD: 1, endM: 1, endD: 19 },
+  { sign: 'Aquarius', symbol: '\u2652', element: 'Air', modality: 'Fixed', planet: 'Uranus', startM: 1, startD: 20, endM: 2, endD: 18 },
+  { sign: 'Pisces', symbol: '\u2653', element: 'Water', modality: 'Mutable', planet: 'Neptune', startM: 2, startD: 19, endM: 3, endD: 20 },
+  { sign: 'Aries', symbol: '\u2648', element: 'Fire', modality: 'Cardinal', planet: 'Mars', startM: 3, startD: 21, endM: 4, endD: 19 },
+  { sign: 'Taurus', symbol: '\u2649', element: 'Earth', modality: 'Fixed', planet: 'Venus', startM: 4, startD: 20, endM: 5, endD: 20 },
+  { sign: 'Gemini', symbol: '\u264A', element: 'Air', modality: 'Mutable', planet: 'Mercury', startM: 5, startD: 21, endM: 6, endD: 20 },
+  { sign: 'Cancer', symbol: '\u264B', element: 'Water', modality: 'Cardinal', planet: 'Moon', startM: 6, startD: 21, endM: 7, endD: 22 },
+  { sign: 'Leo', symbol: '\u264C', element: 'Fire', modality: 'Fixed', planet: 'Sun', startM: 7, startD: 23, endM: 8, endD: 22 },
+  { sign: 'Virgo', symbol: '\u264D', element: 'Earth', modality: 'Mutable', planet: 'Mercury', startM: 8, startD: 23, endM: 9, endD: 22 },
+  { sign: 'Libra', symbol: '\u264E', element: 'Air', modality: 'Cardinal', planet: 'Venus', startM: 9, startD: 23, endM: 10, endD: 22 },
+  { sign: 'Scorpio', symbol: '\u264F', element: 'Water', modality: 'Fixed', planet: 'Pluto', startM: 10, startD: 23, endM: 11, endD: 21 },
+  { sign: 'Sagittarius', symbol: '\u2650', element: 'Fire', modality: 'Mutable', planet: 'Jupiter', startM: 11, startD: 22, endM: 12, endD: 21 },
+  { sign: 'Capricorn', symbol: '\u2651', element: 'Earth', modality: 'Cardinal', planet: 'Saturn', startM: 12, startD: 22, endM: 12, endD: 31 },
+];
+
+function getSunSign(month, day) {
+  for (const z of ZODIAC) {
+    if ((month === z.startM && day >= z.startD) || (month === z.endM && day <= z.endD)) {
+      return z;
+    }
+  }
+  return ZODIAC[0]; // fallback Capricorn
+}
+
+function getLifePath(day, month, year) {
+  const str = String(day) + String(month) + String(year);
+  let sum = 0;
+  for (const ch of str) sum += parseInt(ch);
+  while (sum > 9 && sum !== 11 && sum !== 22 && sum !== 33) {
+    let s = 0;
+    for (const ch of String(sum)) s += parseInt(ch);
+    sum = s;
+  }
+  return sum;
+}
+
+function getPersonalYear2026(day, month) {
+  const str = String(day) + String(month) + '2026';
+  let sum = 0;
+  for (const ch of str) sum += parseInt(ch);
+  while (sum > 9 && sum !== 11 && sum !== 22) {
+    let s = 0;
+    for (const ch of String(sum)) s += parseInt(ch);
+    sum = s;
+  }
+  return sum;
+}
+
+// Approximate moon sign (very rough — based on day of month cycle)
+function getApproxMoonSign(day, month, year) {
+  // Moon moves ~13 degrees/day, completes zodiac in ~27.3 days
+  // This is an approximation — real moon sign needs ephemeris
+  const signs = ['Aries','Taurus','Gemini','Cancer','Leo','Virgo','Libra','Scorpio','Sagittarius','Capricorn','Aquarius','Pisces'];
+  const jd = Math.floor(365.25 * (year + 4716)) + Math.floor(30.6001 * (month + 1)) + day - 1524.5;
+  const moonLong = (jd * 13.176396 + 93.272) % 360;
+  const idx = Math.floor(moonLong / 30);
+  return signs[idx % 12];
+}
+
+function getUrlParams() {
+  const params = new URLSearchParams(window.location.search);
+  return {
+    paymentSuccess: params.get('payment') === 'success',
+    sessionId: params.get('session_id'),
+    birthDay: params.get('bd') ? parseInt(params.get('bd')) : null,
+    birthMonth: params.get('bm') ? parseInt(params.get('bm')) : null,
+    birthYear: params.get('by') ? parseInt(params.get('by')) : null,
+  };
+}
+
+const MONTHS = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+
+// ---- Cosmic Card Canvas ----
+function drawCosmicCard(canvas, { sign, symbol, lifePath, element }) {
+  const ctx = canvas.getContext('2d');
+  const w = 600, h = 600;
+  canvas.width = w; canvas.height = h;
+
+  // Dark gradient background
+  const grad = ctx.createRadialGradient(w/2, w/2, 50, w/2, w/2, 400);
+  grad.addColorStop(0, '#151530');
+  grad.addColorStop(1, '#0a0a1a');
+  ctx.fillStyle = grad;
+  ctx.fillRect(0, 0, w, h);
+
+  // Star dots
+  for (let i = 0; i < 80; i++) {
+    const x = Math.random() * w;
+    const y = Math.random() * h;
+    const r = Math.random() * 1.5 + 0.5;
+    ctx.beginPath();
+    ctx.arc(x, y, r, 0, Math.PI * 2);
+    ctx.fillStyle = `rgba(255,255,255,${Math.random() * 0.5 + 0.1})`;
+    ctx.fill();
+  }
+
+  // Gold circle ring
+  ctx.beginPath();
+  ctx.arc(w/2, 260, 130, 0, Math.PI * 2);
+  ctx.strokeStyle = 'rgba(212,175,55,0.3)';
+  ctx.lineWidth = 1;
+  ctx.stroke();
+
+  // Large zodiac unicode symbol
+  ctx.font = '120px Georgia, serif';
+  ctx.textAlign = 'center';
+  ctx.textBaseline = 'middle';
+  ctx.fillStyle = '#d4af37';
+  ctx.fillText(symbol, w/2, 250);
+
+  // Sign name
+  ctx.font = 'bold 28px Georgia, serif';
+  ctx.fillStyle = '#d4af37';
+  ctx.fillText(sign, w/2, 400);
+
+  // Life path number
+  ctx.font = '16px "Source Sans 3", sans-serif';
+  ctx.fillStyle = '#9b7fe8';
+  ctx.fillText(`Life Path ${lifePath}`, w/2, 435);
+
+  // Element
+  ctx.font = '13px "Source Sans 3", sans-serif';
+  ctx.fillStyle = 'rgba(200,200,212,0.5)';
+  ctx.fillText(element + ' Sign', w/2, 465);
+
+  // Border
+  ctx.strokeStyle = 'rgba(212,175,55,0.4)';
+  ctx.lineWidth = 2;
+  ctx.strokeRect(16, 16, w-32, h-32);
+
+  // Brand
+  ctx.font = '11px "Source Sans 3", sans-serif';
+  ctx.fillStyle = 'rgba(200,200,212,0.3)';
+  ctx.fillText('cosmicborn.com', w/2, h - 32);
+}
+
+// ---- Components ----
+
+function SectionCard({ number, title, data }) {
+  if (!data) return null;
+  return (
+    <div className="section-card">
+      <div className="section-number">Section {number} — {title}</div>
+      <div className="section-headline">{data.headline}</div>
+      <div className="section-body">{data.body}</div>
+
+      {data.element_gift && (
+        <div className="sub-insight"><strong>Element gift:</strong> {data.element_gift}</div>
+      )}
+      {data.shadow && (
+        <div className="sub-insight"><strong>Shadow:</strong> {data.shadow}</div>
+      )}
+      {data.life_mission && (
+        <div className="sub-insight"><strong>Life mission:</strong> {data.life_mission}</div>
+      )}
+      {data.power_challenge && (
+        <div className="sub-insight"><strong>Power challenge:</strong> {data.power_challenge}</div>
+      )}
+      {data.note && <div className="moon-note">{data.note}</div>}
+      {data.emotional_need && (
+        <div className="sub-insight"><strong>Emotional need:</strong> {data.emotional_need}</div>
+      )}
+      {data.hidden_gift && (
+        <div className="sub-insight"><strong>Hidden gift:</strong> {data.hidden_gift}</div>
+      )}
+      {data.key_theme && (
+        <div className="sub-insight"><strong>Key theme:</strong> {data.key_theme}</div>
+      )}
+      {data.power_window && (
+        <div className="sub-insight"><strong>Power window:</strong> {data.power_window}</div>
+      )}
+      {data.balance && (
+        <div className="sub-insight"><strong>Balance:</strong> {data.balance}</div>
+      )}
+      {data.compensation && (
+        <div className="sub-insight"><strong>Compensation:</strong> {data.compensation}</div>
+      )}
+      {data.top_strength && (
+        <div className="sub-insight"><strong>Top strength:</strong> {data.top_strength}</div>
+      )}
+      {data.core_shadow && (
+        <div className="sub-insight"><strong>Core shadow:</strong> {data.core_shadow}</div>
+      )}
+      {data.integration_path && (
+        <div className="sub-insight"><strong>Integration:</strong> {data.integration_path}</div>
+      )}
+      {data.power_move && (
+        <div className="power-card">
+          <div className="power-label">Your Power Move</div>
+          <div className="power-text">{data.power_move}</div>
+        </div>
+      )}
+    </div>
+  );
+}
+
+function EmailCapture({ birthData, onCapture }) {
+  const [email, setEmail] = useState('');
+  const [submitting, setSubmitting] = useState(false);
+  const [done, setDone] = useState(false);
+
+  async function handleSubmit(e) {
+    e.preventDefault();
+    if (!email || !email.includes('@')) return;
+    setSubmitting(true);
+    try {
+      await fetch('/api/capture-email', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          email,
+          birth_day: birthData.day,
+          birth_month: birthData.month,
+          birth_year: birthData.year,
+          sun_sign: birthData.sunSign,
+          life_path_number: birthData.lifePath,
+        }),
+      });
+    } catch (_) {}
+    setDone(true);
+    setSubmitting(false);
+    setTimeout(() => onCapture(email), 600);
+  }
+
+  if (done) {
+    return (
+      <div style={{ textAlign: 'center', padding: '16px', color: 'var(--gold)' }}>
+        Saved. Your cosmic blueprint awaits below.
+      </div>
+    );
+  }
+
+  return (
+    <div className="email-card">
+      <div className="label">Save your reading</div>
+      <div className="title">Get your free sections emailed to you</div>
+      <div className="desc">Plus early access to full Cosmic Blueprint readings when they launch.</div>
+      <form className="email-form" onSubmit={handleSubmit}>
+        <input className="email-input" type="email" value={email} onChange={e => setEmail(e.target.value)} placeholder="your@email.com" required />
+        <button className="email-submit" type="submit" disabled={submitting}>{submitting ? '...' : 'Save'}</button>
+      </form>
+      <div className="email-fine">No spam. Unsubscribe anytime.</div>
+    </div>
+  );
+}
+
+function CosmicCardCanvas({ signData, lifePath, blurred }) {
+  const canvasRef = useRef(null);
+
+  useEffect(() => {
+    if (canvasRef.current && signData) {
+      drawCosmicCard(canvasRef.current, {
+        sign: signData.sign,
+        symbol: signData.symbol,
+        lifePath,
+        element: signData.element,
+      });
+    }
+  }, [signData, lifePath]);
+
+  return (
+    <div className={'cosmic-card-wrap' + (blurred ? ' cosmic-card-blurred' : '')}>
+      <canvas ref={canvasRef} style={{ width: '300px', height: '300px' }} />
+      <div className="cosmic-card-label">
+        {blurred ? 'Your Cosmic Card — unlock with full reading' : 'Your Cosmic Card'}
+      </div>
+    </div>
+  );
+}
+
+function PaywallCard({ birthData }) {
+  const linkMeta = document.querySelector('meta[name="stripe-payment-link"]');
+  const paymentLink = linkMeta ? linkMeta.content : 'STRIPE_LINK_PLACEHOLDER';
+  const isPlaceholder = paymentLink === 'STRIPE_LINK_PLACEHOLDER' || paymentLink === '#';
+
+  const successUrl = encodeURIComponent(
+    window.location.origin + '/?payment=success&session_id={CHECKOUT_SESSION_ID}'
+    + '&bd=' + birthData.day + '&bm=' + birthData.month + '&by=' + birthData.year
+  );
+  const fullLink = isPlaceholder ? '#' : `${paymentLink}?client_reference_id=cb_${birthData.day}_${birthData.month}_${birthData.year}&success_url=${successUrl}`;
+
+  const sections = [
+    'Moon Sign Depth — your hidden emotional world',
+    'Personal Year 2026 — what this year holds for you',
+    'Elemental Blueprint — your cosmic composition',
+    'Cosmic Strengths & Shadows — your duality map',
+    'Cosmic Edge — your unique power move right now',
+    'Cosmic Card — your personalized visual sigil',
+  ];
+
+  return (
+    <div className="paywall-card">
+      <h2>Unlock Your Full Cosmic Blueprint</h2>
+      <p>You have seen your Sun and Life Path. Now go deeper into the forces that shape your inner world, your year ahead, and your cosmic edge.</p>
+      <div className="paywall-sections">
+        {sections.map((s, i) => (
+          <div key={i} className="paywall-item">
+            <span className="check">&#10003;</span>
+            <span>{s}</span>
+          </div>
+        ))}
+      </div>
+      <div className="price-badge">
+        <span className="currency">$</span>
+        <span className="amount">9</span>
+        <span className="per">one-time</span>
+      </div>
+      {isPlaceholder ? (
+        <div style={{ padding: '14px', background: 'var(--purple-dim)', borderRadius: '10px', color: 'var(--purple)', fontWeight: 600 }}>
+          Coming soon — join the waitlist above
+        </div>
+      ) : (
+        <a href={fullLink} className="pay-btn">Reveal My Full Blueprint</a>
+      )}
+      <div className="paywall-disclaimer">Instant delivery. No subscription. Powered by AI astrology.</div>
+    </div>
+  );
+}
+
+// ---- Main App ----
+function App() {
+  const [state, setState] = useState('idle'); // idle, loading, free_shown, email_captured, paid
+  const [day, setDay] = useState('');
+  const [month, setMonth] = useState('');
+  const [year, setYear] = useState('');
+  const [birthTime, setBirthTime] = useState('');
+  const [report, setReport] = useState(null);
+  const [error, setError] = useState(null);
+  const [birthData, setBirthData] = useState(null);
+
+  // Check for payment return
+  useEffect(() => {
+    const params = getUrlParams();
+    if (params.paymentSuccess && params.sessionId && params.birthDay && params.birthMonth && params.birthYear) {
+      setDay(String(params.birthDay));
+      setMonth(String(params.birthMonth));
+      setYear(String(params.birthYear));
+
+      const signData = getSunSign(params.birthMonth, params.birthDay);
+      const lp = getLifePath(params.birthDay, params.birthMonth, params.birthYear);
+      const py = getPersonalYear2026(params.birthDay, params.birthMonth);
+      const moonApprox = getApproxMoonSign(params.birthDay, params.birthMonth, params.birthYear);
+
+      const bd = {
+        day: params.birthDay, month: params.birthMonth, year: params.birthYear,
+        sunSign: signData.sign, sunSymbol: signData.symbol,
+        sunElement: signData.element, sunModality: signData.modality, sunPlanet: signData.planet,
+        lifePath: lp, personalYear: py, moonApprox, signData,
+      };
+      setBirthData(bd);
+      setState('loading');
+
+      fetch('/api/verify-payment', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          session_id: params.sessionId,
+          birth_day: params.birthDay,
+          birth_month: params.birthMonth,
+          birth_year: params.birthYear,
+          sun_sign: signData.sign,
+          life_path_number: lp,
+        }),
+      })
+      .then(r => r.json())
+      .then(data => {
+        if (data.error) { setError(data.error); setState('idle'); }
+        else { setReport(data); setState('paid'); }
+      })
+      .catch(() => { setError('Payment verification failed. Please try again.'); setState('idle'); });
+
+      // Clean URL
+      window.history.replaceState({}, '', '/');
+    }
+  }, []);
+
+  async function handleSubmit(e) {
+    e.preventDefault();
+    const d = parseInt(day), m = parseInt(month), y = parseInt(year);
+    if (!d || !m || !y) return;
+
+    const signData = getSunSign(m, d);
+    const lp = getLifePath(d, m, y);
+    const py = getPersonalYear2026(d, m);
+    const moonApprox = getApproxMoonSign(d, m, y);
+
+    const bd = {
+      day: d, month: m, year: y,
+      sunSign: signData.sign, sunSymbol: signData.symbol,
+      sunElement: signData.element, sunModality: signData.modality, sunPlanet: signData.planet,
+      lifePath: lp, personalYear: py, moonApprox, signData,
+    };
+    setBirthData(bd);
+    setState('loading');
+    setError(null);
+
+    try {
+      const res = await fetch('/api/analyze', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          day: d, month: m, year: y,
+          sun_sign: signData.sign,
+          sun_element: signData.element,
+          sun_modality: signData.modality,
+          sun_planet: signData.planet,
+          life_path: lp,
+          moon_sign_approx: moonApprox,
+          personal_year_2026: py,
+          sections: 'free',
+        }),
+      });
+      const data = await res.json();
+      if (data.error) { setError(data.error); setState('idle'); }
+      else { setReport(data); setState('free_shown'); }
+    } catch {
+      setError('Something went wrong. Please try again.');
+      setState('idle');
+    }
+  }
+
+  function handleEmailCapture() {
+    setState('email_captured');
+  }
+
+  function handleReset() {
+    setState('idle');
+    setReport(null);
+    setError(null);
+    setBirthData(null);
+    setDay(''); setMonth(''); setYear('');
+  }
+
+  const isPaid = state === 'paid';
+
+  return (
+    <React.Fragment>
+      <header className="site-header">
+        <div className="container">
+          <div className="logo-mark">&#10026;</div>
+          <div className="logo-text">CosmicBorn</div>
+        </div>
+      </header>
+
+      <div className="container">
+        {state === 'idle' && (
+          <React.Fragment>
+            <section className="hero">
+              <div className="hero-eyebrow">Astrology + Numerology + AI</div>
+              <h1>Your Cosmic <em>Blueprint</em></h1>
+              <div className="hero-sub">Enter your birthday. Receive a reading that feels like it was written by someone who has known you your whole life.</div>
+              <div className="hero-tagline">Sun sign. Life Path. Moon sign. Cosmic Card. All from one date.</div>
+            </section>
+
+            <form className="input-card" onSubmit={handleSubmit}>
+              <label className="input-label">Your Birthday</label>
+              <div className="input-row">
+                <select className="cosmic-select" value={day} onChange={e => setDay(e.target.value)} required>
+                  <option value="">Day</option>
+                  {Array.from({length:31}, (_,i) => <option key={i+1} value={i+1}>{i+1}</option>)}
+                </select>
+                <select className="cosmic-select" value={month} onChange={e => setMonth(e.target.value)} required>
+                  <option value="">Month</option>
+                  {MONTHS.map((m,i) => <option key={i+1} value={i+1}>{m}</option>)}
+                </select>
+                <select className="cosmic-select" value={year} onChange={e => setYear(e.target.value)} required>
+                  <option value="">Year</option>
+                  {Array.from({length:61}, (_,i) => <option key={2010-i} value={2010-i}>{2010-i}</option>)}
+                </select>
+              </div>
+              <label className="input-label" style={{marginTop: '12px'}}>Birth Time (optional)</label>
+              <div className="input-row time-row">
+                <input className="cosmic-input" type="time" value={birthTime} onChange={e => setBirthTime(e.target.value)} placeholder="HH:MM" />
+              </div>
+              <div className="time-hint">Birth time refines your Moon sign. Leave blank for an approximation.</div>
+              <button className="submit-btn" type="submit">Reveal My Blueprint</button>
+            </form>
+
+            {error && <div className="error-card">{error}</div>}
+          </React.Fragment>
+        )}
+
+        {state === 'loading' && (
+          <div className="loading-state">
+            <div className="cosmic-spinner" />
+            <p>Reading the stars for you...</p>
+            <div className="loading-detail">Calculating your cosmic blueprint</div>
+          </div>
+        )}
+
+        {(state === 'free_shown' || state === 'email_captured' || state === 'paid') && report && birthData && (
+          <div className="report-container">
+            <div className="report-header">
+              <div className="zodiac-symbol">{birthData.sunSymbol}</div>
+              <div className="sign-name">{birthData.sunSign}</div>
+              <div className="life-path-label">Life Path {birthData.lifePath}</div>
+              <div className="birth-info">
+                {MONTHS[birthData.month - 1]} {birthData.day}, {birthData.year}
+                {' '}&middot;{' '}{birthData.sunElement} &middot; {birthData.moonApprox} Moon (approx)
+              </div>
+            </div>
+
+            {/* Free sections */}
+            <SectionCard number={1} title="Sun Sign Energy" data={report.report?.sun_sign_energy} />
+            <SectionCard number={2} title="Life Path Number" data={report.report?.life_path_number} />
+
+            {/* Email capture gate */}
+            {state === 'free_shown' && (
+              <EmailCapture birthData={birthData} onCapture={handleEmailCapture} />
+            )}
+
+            {/* Cosmic Card (blurred if not paid) */}
+            <CosmicCardCanvas signData={birthData.signData} lifePath={birthData.lifePath} blurred={!isPaid} />
+
+            {/* Paywall or paid sections */}
+            {!isPaid && (
+              <PaywallCard birthData={birthData} />
+            )}
+
+            {isPaid && (
+              <React.Fragment>
+                <SectionCard number={3} title="Moon Sign Depth" data={report.report?.moon_sign_depth} />
+                <SectionCard number={4} title="Personal Year 2026" data={report.report?.personal_year_2026} />
+                <SectionCard number={5} title="Elemental Blueprint" data={report.report?.elemental_blueprint} />
+                <SectionCard number={6} title="Cosmic Strengths & Shadows" data={report.report?.cosmic_strengths_shadows} />
+                <SectionCard number={7} title="Cosmic Edge" data={report.report?.cosmic_edge} />
+              </React.Fragment>
+            )}
+
+            <div className="report-actions">
+              <button className="action-btn" onClick={handleReset}>New Reading</button>
+            </div>
+          </div>
+        )}
+      </div>
+
+      <footer className="site-footer">
+        <div className="container">
+          A <a href="https://thirtyonefifty.com">THIRTYONEFIFTY</a> venture.
+          Information and entertainment only. Not professional advice of any kind.
+        </div>
+      </footer>
+    </React.Fragment>
+  );
+}
+
+ReactDOM.createRoot(document.getElementById('root')).render(<App />);
+</script>
+</body>
+</html>
