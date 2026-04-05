@@ -31,7 +31,7 @@ export default async function handler(req, res) {
       },
       body: JSON.stringify({
         model: 'claude-haiku-4-5-20251001',
-        max_tokens: isFree ? 600 : 2800,
+        max_tokens: isFree ? 1200 : 2800,
         messages: [{
           role: 'user',
           content: prompt,
@@ -50,11 +50,13 @@ export default async function handler(req, res) {
 
     let parsed;
     try {
-      const jsonMatch = rawText.match(/\{[\s\S]*\}/);
-      parsed = jsonMatch ? JSON.parse(jsonMatch[0]) : JSON.parse(rawText);
+      // Strip markdown code fences if present
+      const cleaned = rawText.replace(/^```(?:json)?\s*/i, '').replace(/\s*```\s*$/, '').trim();
+      const jsonMatch = cleaned.match(/\{[\s\S]*\}/);
+      parsed = jsonMatch ? JSON.parse(jsonMatch[0]) : JSON.parse(cleaned);
     } catch {
-      console.error('JSON parse error, raw:', rawText.substring(0, 300));
-      return res.status(502).json({ error: 'Report parse error' });
+      console.error('JSON parse error, raw:', rawText.substring(0, 500));
+      return res.status(502).json({ error: 'Report parse error', debug: rawText.substring(0, 200) });
     }
 
     return res.status(200).json({
