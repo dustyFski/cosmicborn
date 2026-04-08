@@ -3,11 +3,12 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>CosmicBorn — Your Cosmic Blueprint from Birth</title>
+  <title>SacredChart — Your Cosmic Blueprint from Birth</title>
   <meta name="description" content="Discover your cosmic blueprint. Sun sign, Life Path number, Moon sign, and Cosmic Card — an AI-powered astrology and numerology reading that feels hauntingly accurate." />
-  <meta property="og:title" content="CosmicBorn — Your Cosmic Blueprint" />
+  <meta property="og:title" content="SacredChart — Your Cosmic Blueprint" />
   <meta property="og:description" content="Enter your birthday. Get a cosmic reading that feels like it was written by someone who knows your soul." />
   <meta property="og:type" content="website" />
+  <meta property="og:url" content="https://sacredchart.com" />
   <meta name="theme-color" content="#0a0a1a" />
   <meta name="stripe-payment-link" content="STRIPE_LINK_PLACEHOLDER" />
 
@@ -435,153 +436,12 @@
     }
     .site-footer a { color: var(--gold); text-decoration: none; }
 
-    /* ---- Compat picker ---- */
-    .compat-picker {
-      background: var(--card-bg);
-      border: 1px solid var(--gold-dim);
-      border-radius: 12px;
-      padding: 20px 24px; margin: 16px 0;
-    }
-    .compat-picker-label {
-      font-size: 12px; font-weight: 700;
-      text-transform: uppercase; letter-spacing: 0.1em;
-      color: var(--purple); margin-bottom: 6px;
-    }
-    .compat-picker-title {
-      font-family: 'Playfair Display', Georgia, serif;
-      font-size: 17px; color: var(--text-bright); margin-bottom: 12px;
-    }
-    .compat-row {
-      display: flex; gap: 10px; align-items: center; flex-wrap: wrap;
-    }
-    .compat-select {
-      flex: 1; min-width: 140px;
-      padding: 10px 12px;
-      background: rgba(255,255,255,0.03);
-      border: 1px solid var(--gold-dim);
-      border-radius: 8px; color: var(--text-bright);
-      font-size: 14px; font-family: 'Source Sans 3', sans-serif;
-    }
-    .compat-select:focus { outline: none; border-color: var(--gold); }
-    .compat-btn {
-      padding: 10px 18px;
-      background: var(--purple); color: white;
-      border: none; border-radius: 8px;
-      font-size: 14px; font-weight: 700; cursor: pointer;
-      transition: all 0.2s; white-space: nowrap;
-    }
-    .compat-btn:hover { opacity: 0.85; }
-    .compat-btn:disabled { opacity: 0.4; cursor: not-allowed; }
-    .compat-card {
-      background: linear-gradient(135deg, rgba(155,127,232,0.08), var(--card-bg));
-      border: 1px solid var(--purple-dim);
-      border-radius: 12px; padding: 24px; margin: 12px 0;
-    }
-    .compat-card-header {
-      font-family: 'Playfair Display', Georgia, serif;
-      font-size: 20px; color: var(--purple); margin-bottom: 4px;
-    }
-    .compat-verdict {
-      font-size: 14px; font-style: italic;
-      color: var(--text-muted); margin-bottom: 16px;
-    }
-    .compat-row-label {
-      font-size: 11px; font-weight: 700;
-      text-transform: uppercase; letter-spacing: 0.1em;
-      color: var(--gold); margin-bottom: 4px; margin-top: 14px;
-    }
-    .compat-text { font-size: 14px; color: var(--text); line-height: 1.65; }
-    .compat-secret {
-      margin-top: 14px; padding: 12px 16px;
-      background: var(--gold-glow); border-radius: 8px;
-      font-size: 14px; color: var(--text-bright); font-style: italic;
-    }
-
-    /* ---- Sample full report ---- */
-    .sample-report { margin: 24px 0; }
-    .sample-report-header {
-      text-align: center;
-      font-size: 11px; font-weight: 700;
-      text-transform: uppercase; letter-spacing: 0.15em;
-      color: var(--gold); margin-bottom: 16px;
-      display: flex; align-items: center; gap: 12px;
-    }
-    .sample-report-header::before, .sample-report-header::after {
-      content: ''; flex: 1; height: 1px; background: var(--gold-dim);
-    }
-    .sample-sections-wrap { position: relative; }
-    .sample-sections-inner {
-      filter: blur(3px); pointer-events: none;
-      user-select: none; opacity: 0.5;
-    }
-    .sample-section-card {
-      background: var(--card-bg);
-      border: 1px solid var(--card-border);
-      border-radius: 12px; padding: 18px 22px; margin-bottom: 10px;
-    }
-    .sample-section-card .s-num {
-      font-size: 11px; font-weight: 700;
-      text-transform: uppercase; letter-spacing: 0.12em;
-      color: var(--purple); margin-bottom: 4px;
-    }
-    .sample-section-card .s-headline {
-      font-family: 'Playfair Display', Georgia, serif;
-      font-size: 15px; color: var(--text-bright); margin-bottom: 6px;
-    }
-    .sample-section-card .s-body {
-      font-size: 13px; color: var(--text-muted); line-height: 1.6;
-    }
-    .sample-overlay {
-      position: absolute; top: 0; left: 0; right: 0; bottom: 0;
-      display: flex; flex-direction: column;
-      align-items: center; justify-content: center; gap: 10px;
-      background: radial-gradient(ellipse at center, rgba(10,10,26,0.7) 0%, rgba(10,10,26,0.3) 100%);
-      border-radius: 12px; padding: 20px;
-    }
-    .sample-overlay-text {
-      font-family: 'Playfair Display', Georgia, serif;
-      font-size: 18px; color: var(--text-bright);
-      text-align: center; max-width: 300px; line-height: 1.4;
-    }
-    .sample-overlay-sub {
-      font-size: 13px; color: var(--text-muted);
-      text-align: center; max-width: 260px;
-    }
-
-    /* ---- Sub-insight warning tint ---- */
-    .sub-insight--warning { border-left: 2px solid rgba(212,175,55,0.4); padding-left: 10px; }
-
-    /* ---- Landing layout (desktop split) ---- */
-    .landing-layout { display: grid; grid-template-columns: 1fr; }
-
     /* ---- Responsive ---- */
-
-    /* Phone */
     @media (max-width: 520px) {
       .input-card { padding: 20px; }
       .input-row { grid-template-columns: 1fr 1fr; }
       .hero { padding: 40px 0 24px; }
       .email-form { flex-direction: column; }
-      .compat-row { flex-direction: column; }
-      .compat-btn { width: 100%; }
-    }
-
-    /* Desktop — 2-column landing, single-column report */
-    @media (min-width: 900px) {
-      .container { max-width: 1140px; padding: 0 48px; }
-      .landing-layout {
-        grid-template-columns: 1fr 1fr;
-        gap: 80px;
-        align-items: center;
-        padding: 80px 0 60px;
-      }
-      .hero { padding: 0; text-align: left; }
-      .hero h1 { font-size: 52px; }
-      .hero-eyebrow { text-align: left; }
-      .hero-sub { margin: 0 0 8px; max-width: none; text-align: left; }
-      .hero-tagline { text-align: left; }
-      .landing-sidebar .input-card { max-width: none; margin-bottom: 20px; }
-      .report-container { max-width: 860px; margin: 0 auto; }
     }
   </style>
   <script defer src="/_vercel/insights/script.js"></script>
@@ -748,7 +608,7 @@ function drawCosmicCard(canvas, { sign, symbol, lifePath, element }) {
   // Brand
   ctx.font = '11px "Source Sans 3", sans-serif';
   ctx.fillStyle = 'rgba(200,200,212,0.3)';
-  ctx.fillText('cosmicborn.com', w/2, h - 32);
+  ctx.fillText('sacredchart.com', w/2, h - 32);
 }
 
 // ---- Components ----
@@ -772,12 +632,6 @@ function SectionCard({ number, title, data }) {
       )}
       {data.power_challenge && (
         <div className="sub-insight"><strong>Power challenge:</strong> {data.power_challenge}</div>
-      )}
-      {data.love_style && (
-        <div className="sub-insight"><strong>Love style:</strong> {data.love_style}</div>
-      )}
-      {data.warning && (
-        <div className="sub-insight sub-insight--warning"><strong>Blind spot:</strong> {data.warning}</div>
       )}
       {data.note && <div className="moon-note">{data.note}</div>}
       {data.emotional_need && (
@@ -940,118 +794,6 @@ function PaywallCard({ birthData }) {
   );
 }
 
-// ---- Compat + Sample components ----
-
-const ZODIAC_SIGN_NAMES = ['Aries','Taurus','Gemini','Cancer','Leo','Virgo','Libra','Scorpio','Sagittarius','Capricorn','Aquarius','Pisces'];
-
-function PartnerSignPicker({ sunSign, sunData, lifePath, onResult }) {
-  const [pick, setPick] = React.useState('');
-  const [loading, setLoading] = React.useState(false);
-
-  async function handleCheck() {
-    if (!pick || pick === sunSign) return;
-    setLoading(true);
-    try {
-      const res = await fetch('/api/analyze', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          day: 1, month: 1, year: 1990,
-          sun_sign: sunSign,
-          sun_element: sunData.element,
-          sun_modality: sunData.modality,
-          sun_planet: sunData.planet,
-          life_path: lifePath,
-          partner_sign: pick,
-          sections: 'compat',
-        }),
-      });
-      const data = await res.json();
-      if (data.report?.compatibility) onResult(pick, data.report.compatibility);
-    } catch (_) {}
-    setLoading(false);
-  }
-
-  return (
-    <div className="compat-picker">
-      <div className="section-number">Bonus — Cosmic Compatibility</div>
-      <div className="section-headline">How do you align with another sign?</div>
-      <select className="compat-select" value={pick} onChange={e => setPick(e.target.value)}>
-        <option value="">Choose a sign</option>
-        {ZODIAC_SIGN_NAMES.filter(s => s !== sunSign).map(s => (
-          <option key={s} value={s}>{s}</option>
-        ))}
-      </select>
-      <button className="compat-btn" onClick={handleCheck} disabled={!pick || loading}>
-        {loading ? 'Reading...' : 'Check Compatibility'}
-      </button>
-    </div>
-  );
-}
-
-function CompatibilityCard({ partnerSign, data }) {
-  if (!data) return null;
-  return (
-    <div className="compat-card">
-      <div className="compat-card-header">You + {partnerSign}</div>
-      <div className="compat-verdict">{data.headline}</div>
-      <div className="compat-row-label">The pull</div>
-      <div className="compat-text">{data.chemistry}</div>
-      <div className="compat-row-label">The friction</div>
-      <div className="compat-text">{data.challenge}</div>
-      <div className="compat-row-label">Bottom line</div>
-      <div className="compat-verdict" style={{fontSize:'0.95rem'}}>{data.verdict}</div>
-      {data.secret_weapon && (
-        <div className="compat-secret"><strong>Secret weapon:</strong> {data.secret_weapon}</div>
-      )}
-    </div>
-  );
-}
-
-const SAMPLE_SECTIONS = [
-  {
-    num: '3',
-    title: 'Moon Sign Depth',
-    headline: 'Your emotional world runs deeper than anyone suspects.',
-    body: 'There is a hidden intensity in how you process feeling — not dramatic, but tidal. You absorb more than you let on, and you need more solitude to reset than most people in your life realise. When you feel safe, you are generous and perceptive. When you do not, you disappear quietly.'
-  },
-  {
-    num: '4',
-    title: 'Personal Year 2026',
-    headline: '2026 is the year the architecture of your life shifts.',
-    body: 'This is not a year to wait and see. The numerological current running through 2026 for your birth date is a building energy — decisions made in the first half echo for the next nine years. Something you have been planning in the background is finally ready to become real.'
-  },
-  {
-    num: '5',
-    title: 'Your Cosmic Edge',
-    headline: 'The combination you carry is rarer than you think.',
-    body: 'Most people with your sun placement default to one mode. You do not. The specific convergence of your solar identity, your numerological pattern, and the year you were born gives you an unusual ability to operate in contradictory states — driven and patient, visible and private, at once.'
-  }
-];
-
-function SampleFullReport() {
-  return (
-    <div className="sample-report">
-      <div className="sample-report-header">Preview: what the full reading reveals</div>
-      <div className="sample-sections-wrap">
-        <div className="sample-sections-inner">
-          {SAMPLE_SECTIONS.map(s => (
-            <div key={s.num} className="sample-section-card">
-              <div className="s-num">Section {s.num} — {s.title}</div>
-              <div className="s-headline">{s.headline}</div>
-              <div className="s-body">{s.body}</div>
-            </div>
-          ))}
-        </div>
-        <div className="sample-overlay">
-          <div className="sample-overlay-text">5 sections written for your exact date</div>
-          <div className="sample-overlay-sub">Moon Depth &middot; Personal Year 2026 &middot; Elemental Blueprint &middot; Strengths &amp; Shadows &middot; Cosmic Edge</div>
-        </div>
-      </div>
-    </div>
-  );
-}
-
 // ---- Main App ----
 function App() {
   const [state, setState] = useState('idle'); // idle, loading, free_shown, email_captured, paid
@@ -1062,8 +804,6 @@ function App() {
   const [report, setReport] = useState(null);
   const [error, setError] = useState(null);
   const [birthData, setBirthData] = useState(null);
-  const [partnerSign, setPartnerSign] = useState('');
-  const [compatibility, setCompatibility] = useState(null);
 
   // Check for payment return
   useEffect(() => {
@@ -1165,8 +905,6 @@ function App() {
     setReport(null);
     setError(null);
     setBirthData(null);
-    setPartnerSign('');
-    setCompatibility(null);
     setDay(''); setMonth(''); setYear('');
   }
 
@@ -1177,49 +915,45 @@ function App() {
       <header className="site-header">
         <div className="container">
           <div className="logo-mark">&#10026;</div>
-          <div className="logo-text">CosmicBorn</div>
+          <div className="logo-text">SacredChart</div>
         </div>
       </header>
 
       <div className="container">
         {state === 'idle' && (
           <React.Fragment>
-            <div className="landing-layout">
-              <section className="hero">
-                <div className="hero-eyebrow">Astrology + Numerology + AI</div>
-                <h1>Your Cosmic <em>Blueprint</em></h1>
-                <div className="hero-sub">Enter your birthday. Receive a reading that feels like it was written by someone who has known you your whole life.</div>
-                <div className="hero-tagline">Sun sign. Life Path. Moon sign. Cosmic Card. All from one date.</div>
-              </section>
+            <section className="hero">
+              <div className="hero-eyebrow">Astrology + Numerology + AI</div>
+              <h1>Your Cosmic <em>Blueprint</em></h1>
+              <div className="hero-sub">Enter your birthday. Receive a reading that feels like it was written by someone who has known you your whole life.</div>
+              <div className="hero-tagline">Sun sign. Life Path. Moon sign. Cosmic Card. All from one date.</div>
+            </section>
 
-              <div className="landing-sidebar">
-                <form className="input-card" onSubmit={handleSubmit}>
-                  <label className="input-label">Your Birthday</label>
-                  <div className="input-row">
-                    <select className="cosmic-select" value={day} onChange={e => setDay(e.target.value)} required>
-                      <option value="">Day</option>
-                      {Array.from({length:31}, (_,i) => <option key={i+1} value={i+1}>{i+1}</option>)}
-                    </select>
-                    <select className="cosmic-select" value={month} onChange={e => setMonth(e.target.value)} required>
-                      <option value="">Month</option>
-                      {MONTHS.map((m,i) => <option key={i+1} value={i+1}>{m}</option>)}
-                    </select>
-                    <select className="cosmic-select" value={year} onChange={e => setYear(e.target.value)} required>
-                      <option value="">Year</option>
-                      {Array.from({length:61}, (_,i) => <option key={2010-i} value={2010-i}>{2010-i}</option>)}
-                    </select>
-                  </div>
-                  <label className="input-label" style={{marginTop: '12px'}}>Birth Time (optional)</label>
-                  <div className="input-row time-row">
-                    <input className="cosmic-input" type="time" value={birthTime} onChange={e => setBirthTime(e.target.value)} placeholder="HH:MM" />
-                  </div>
-                  <div className="time-hint">Birth time refines your Moon sign. Leave blank for an approximation.</div>
-                  <button className="submit-btn" type="submit">Reveal My Blueprint</button>
-                </form>
-
-                {error && <div className="error-card">{error}</div>}
+            <form className="input-card" onSubmit={handleSubmit}>
+              <label className="input-label">Your Birthday</label>
+              <div className="input-row">
+                <select className="cosmic-select" value={day} onChange={e => setDay(e.target.value)} required>
+                  <option value="">Day</option>
+                  {Array.from({length:31}, (_,i) => <option key={i+1} value={i+1}>{i+1}</option>)}
+                </select>
+                <select className="cosmic-select" value={month} onChange={e => setMonth(e.target.value)} required>
+                  <option value="">Month</option>
+                  {MONTHS.map((m,i) => <option key={i+1} value={i+1}>{m}</option>)}
+                </select>
+                <select className="cosmic-select" value={year} onChange={e => setYear(e.target.value)} required>
+                  <option value="">Year</option>
+                  {Array.from({length:61}, (_,i) => <option key={2010-i} value={2010-i}>{2010-i}</option>)}
+                </select>
               </div>
-            </div>
+              <label className="input-label" style={{marginTop: '12px'}}>Birth Time (optional)</label>
+              <div className="input-row time-row">
+                <input className="cosmic-input" type="time" value={birthTime} onChange={e => setBirthTime(e.target.value)} placeholder="HH:MM" />
+              </div>
+              <div className="time-hint">Birth time refines your Moon sign. Leave blank for an approximation.</div>
+              <button className="submit-btn" type="submit">Reveal My Blueprint</button>
+            </form>
+
+            {error && <div className="error-card">{error}</div>}
           </React.Fragment>
         )}
 
@@ -1246,19 +980,6 @@ function App() {
             {/* Free sections */}
             <SectionCard number={1} title="Sun Sign Energy" data={report.report?.sun_sign_energy} />
             <SectionCard number={2} title="Life Path Number" data={report.report?.life_path_number} />
-            <SectionCard number={3} title="Love Energy" data={report.report?.love_energy} />
-
-            {/* Compatibility picker + result */}
-            <PartnerSignPicker
-              sunSign={birthData.sunSign}
-              sunData={birthData.signData}
-              lifePath={birthData.lifePath}
-              onResult={(sign, compat) => { setPartnerSign(sign); setCompatibility(compat); }}
-            />
-            {compatibility && <CompatibilityCard partnerSign={partnerSign} data={compatibility} />}
-
-            {/* Sample preview — shown before email gate so user sees what they're missing */}
-            {!isPaid && <SampleFullReport />}
 
             {/* Email capture gate */}
             {state === 'free_shown' && (
@@ -1275,11 +996,11 @@ function App() {
 
             {isPaid && (
               <React.Fragment>
-                <SectionCard number={4} title="Moon Sign Depth" data={report.report?.moon_sign_depth} />
-                <SectionCard number={5} title="Personal Year 2026" data={report.report?.personal_year_2026} />
-                <SectionCard number={6} title="Elemental Blueprint" data={report.report?.elemental_blueprint} />
-                <SectionCard number={7} title="Cosmic Strengths & Shadows" data={report.report?.cosmic_strengths_shadows} />
-                <SectionCard number={8} title="Cosmic Edge" data={report.report?.cosmic_edge} />
+                <SectionCard number={3} title="Moon Sign Depth" data={report.report?.moon_sign_depth} />
+                <SectionCard number={4} title="Personal Year 2026" data={report.report?.personal_year_2026} />
+                <SectionCard number={5} title="Elemental Blueprint" data={report.report?.elemental_blueprint} />
+                <SectionCard number={6} title="Cosmic Strengths & Shadows" data={report.report?.cosmic_strengths_shadows} />
+                <SectionCard number={7} title="Cosmic Edge" data={report.report?.cosmic_edge} />
               </React.Fragment>
             )}
 

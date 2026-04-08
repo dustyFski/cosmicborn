@@ -29,7 +29,7 @@ export default async function handler(req, res) {
           birth_year: birth_year || null,
           sun_sign: sun_sign || null,
           life_path_number: life_path_number || null,
-          source: 'cosmicborn_free_report',
+          source: 'sacredchart_free_report',
           created_at: new Date().toISOString(),
         }),
       });

@@ -3,7 +3,7 @@ export default async function handler(req, res) {
     return res.status(405).json({ error: 'Method not allowed' });
   }
 
-  const { day, month, year, sun_sign, sun_element, sun_modality, sun_planet, life_path, moon_sign_approx, personal_year_2026, partner_sign, sections = 'free' } = req.body;
+  const { day, month, year, sun_sign, sun_element, sun_modality, sun_planet, life_path, moon_sign_approx, personal_year_2026, sections = 'free' } = req.body;
 
   if (!day || !month || !year) {
     return res.status(400).json({ error: 'Day, month, and year are required' });
@@ -19,10 +19,7 @@ export default async function handler(req, res) {
   }
 
   const isFree = sections === 'free';
-  const isCompat = sections === 'compat';
-  const prompt = isCompat
-    ? buildCompatPrompt({ sun_sign, sun_element, sun_modality, sun_planet, life_path, partner_sign })
-    : buildPrompt({ day, month, year, sun_sign, sun_element, sun_modality, sun_planet, life_path, moon_sign_approx, personal_year_2026, isFree });
+  const prompt = buildPrompt({ day, month, year, sun_sign, sun_element, sun_modality, sun_planet, life_path, moon_sign_approx, personal_year_2026, isFree });
 
   try {
     const response = await fetch('https://api.anthropic.com/v1/messages', {
@@ -34,7 +31,7 @@ export default async function handler(req, res) {
       },
       body: JSON.stringify({
         model: 'claude-haiku-4-5-20251001',
-        max_tokens: isCompat ? 800 : (isFree ? 1200 : 2800),
+        max_tokens: isFree ? 600 : 2800,
         messages: [{
           role: 'user',
           content: prompt,
@@ -53,13 +50,11 @@ export default async function handler(req, res) {
 
     let parsed;
     try {
-      // Strip markdown code fences if present
-      const cleaned = rawText.replace(/^```(?:json)?\s*/i, '').replace(/\s*```\s*$/, '').trim();
-      const jsonMatch = cleaned.match(/\{[\s\S]*\}/);
-      parsed = jsonMatch ? JSON.parse(jsonMatch[0]) : JSON.parse(cleaned);
+      const jsonMatch = rawText.match(/\{[\s\S]*\}/);
+      parsed = jsonMatch ? JSON.parse(jsonMatch[0]) : JSON.parse(rawText);
     } catch {
-      console.error('JSON parse error, raw:', rawText.substring(0, 500));
-      return res.status(502).json({ error: 'Report parse error', debug: rawText.substring(0, 200) });
+      console.error('JSON parse error, raw:', rawText.substring(0, 300));
+      return res.status(502).json({ error: 'Report parse error' });
     }
 
     return res.status(200).json({
@@ -95,12 +90,6 @@ function buildPrompt({ day, month, year, sun_sign, sun_element, sun_modality, su
       "body": "3-4 sentences about what Life Path ${life_path} means for someone born on ${birthDate}. Ground it in numerology tradition but make it feel modern and specific. Avoid generic 'you are a natural leader' language.",
       "life_mission": "one sentence distilling their core life mission",
       "power_challenge": "one sentence about the one challenge that will define their growth"
-    },
-    "love_energy": {
-      "headline": "one punchy sentence about how this person loves and receives love",
-      "body": "2-3 sentences about the love patterns of a ${sun_sign} with Life Path ${life_path}. How do they show love? What makes them feel seen? What pattern do they keep repeating? Be specific to this combination — not generic zodiac romance.",
-      "love_style": "one sentence naming their dominant way of expressing or receiving love",
-      "warning": "one sentence about their most consistent relationship blind spot"
     }`;
 
   const paidSections = `
@@ -160,23 +149,4 @@ Rules:
 - Headlines should be punchy and surprising, not predictable
 - Shadow content is as important as strength content — don't sugarcoat
 - Write for someone who wants truth, not flattery`;
-}
-
-function buildCompatPrompt({ sun_sign, sun_element, sun_modality, sun_planet, life_path, partner_sign }) {
-  return `You are a masterful astrologer who speaks with intimate specificity. Return ONLY valid JSON (no markdown, no explanation).
-
-Analyze the cosmic compatibility between a ${sun_sign} (${sun_element}, ${sun_modality}, Life Path ${life_path}) and a ${partner_sign}.
-
-Return exactly this structure:
-{
-  "compatibility": {
-    "headline": "one punchy sentence naming the essence of this pairing — not generic, surprising",
-    "chemistry": "2-3 sentences on what draws them together. The specific irresistible pull between these two signs. Name the actual dynamic.",
-    "challenge": "2-3 sentences on the real friction. Where they'll clash, frustrate each other, or talk past each other. Be honest.",
-    "verdict": "one punchy sentence — the honest summary of this pairing's potential",
-    "secret_weapon": "one sentence on the unexpected strength this combination has that neither sign carries alone"
-  }
-}
-
-Rules: Specific and intimate. Name real patterns between these signs. Not generic astrology column advice.`;
 }
